@@ -48,10 +48,10 @@ class KFold:
         n_sample = X.shape[0]
         indices = np.empty(n_sample)
 
-        for fold in self._iter_folds(X):
+        for valid_idx in self._iter_folds(X):
             train_index = np.array(
-                [idx for idx in indices if idx not in fold]
+                [idx for idx in indices if idx not in valid_idx]
             )
 
-            yield (train_index, fold)
+            yield (train_index, valid_idx)
             

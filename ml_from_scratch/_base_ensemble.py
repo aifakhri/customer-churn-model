@@ -58,12 +58,13 @@ class BaseEnsemble:
     
         # Generate Features
         feature_size = (n_estimators, n_features)
-        features_ = np.empty(feature_size)
+        features_ = np.empty(feature_size, dtype='int')
 
         for i in range(n_estimators):
-            features_[i] = np.random_choice(n_population,
+            features_[i] = np.random.choice(n_population,
                                             n_features,
                                             replace=False)
+            features_[i].sort()
 
         return features_
 
@@ -77,11 +78,10 @@ class BaseEnsemble:
 
         # Extract information from data: n_data, samples, and classes
         self.n_samples, self.n_features = X.shape
-        self.classes = y.unique()
 
 
         # Group the estimators into a list's object
-        self.estimators = self._build_estimators(base_=self.estimator,
+        self.estimators = self._build_estimators(base_= self.estimator,
                                                  n_estimators=self.n_estimators)
 
         # Generate the Bootstrap Sample based on the data index
@@ -90,22 +90,27 @@ class BaseEnsemble:
             n_population=self.n_samples,
             n_samples=self.n_samples)
 
+
         # Feature Selection for Random Forest: Sqrt or Log
         if self.max_features == "sqrt":
             max_features = int(np.sqrt(self.n_features))
         elif self.max_features == "log2":
             max_features = int(np.log2(self.n_features))
     
+        print(max_features)
+
         # 2. Select the features randomly
         self.selected_features = self._select_features(
             n_estimators=self.n_estimators,
-            n_population=self.n_samples,
+            n_population=self.n_features,
             n_features=max_features
         )
-
+        print(self.selected_features)
+        
         # Fit each estimators with the data and the features
         for b in range(self.n_estimators):
             # Select bootstrap features
+            print(self.selected_features[b])
             X_bootstrap = X[:, self.selected_features[b]]
 
             # Select boostrap sample

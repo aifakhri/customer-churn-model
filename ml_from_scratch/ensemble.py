@@ -26,7 +26,7 @@ class RandomForestClassifier(BaseEnsemble):
             min_impurity_decrease=min_impurity_decrease
         )
         super().__init__(
-            estimators=self.estimator,
+            estimator=self.estimator,
             n_estimators=n_estimators,
             max_features=max_features,
             random_state=random_state

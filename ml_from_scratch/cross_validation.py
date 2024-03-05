@@ -3,7 +3,7 @@ import numpy as np
 
 from copy import deepcopy
 from ._resampling import KFold
-from .metrics import __all__
+from .metrics import accuracy_score
 
 
 def cross_validation_score(X,
@@ -20,7 +20,6 @@ def cross_validation_score(X,
     # Split data
     k_fold = KFold(n_folds=cv)
 
-    scoring = __all__[scoring]
     score_train_list = []
     score_valid_list = []
     for i, (idx_train, idx_valid) in enumerate(k_fold.split(X)):
@@ -36,8 +35,8 @@ def cross_validation_score(X,
         y_pred_valid = model.predict(X_valid)
 
         # score
-        score_train = scoring(y_train, y_pred_train)
-        score_valid = scoring(y_valid, y_pred_valid)
+        score_train = accuracy_score(y_train, y_pred_train)
+        score_valid = accuracy_score(y_valid, y_pred_valid)
 
         #
         score_train_list.append(score_train)
