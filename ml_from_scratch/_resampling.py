@@ -4,6 +4,9 @@ import numpy as np
 
 
 class KFold:
+    """ class to generate K-Fold
+    """
+
     def __init__(
         self,
         n_folds=5,
@@ -15,11 +18,20 @@ class KFold:
 
     def _iter_indices(self, X):
         """Iterate the data based on the n_folds
+        
+        Parameters
+        ----------
+        X: array
+            The train data
         """
 
+        # get the row data or samples from X
         n_samples = X.shape[0]
+
+        # Generate empty array to store the indices
         indices = np.arange(n_samples)
 
+        # Generate random seed and shuffle the index
         np.random.seed(self.random_state)
         np.random.shuffle(indices)
 
@@ -33,6 +45,7 @@ class KFold:
 
         # Assign the remainder to each folds
         fold_sizes[:fold_remainders] += 1
+
         # Assign data (index) to the fold
         current = 0
         for fold_size in fold_sizes:
@@ -41,7 +54,12 @@ class KFold:
             current = stop
 
     def split(self, X):
-        """Function to split data based on the n_folds
+        """Procedure to split data based on the n_folds
+
+        Parameters
+        ----------
+        X: array
+            The train data
         """
 
         n_samples = X.shape[0]
