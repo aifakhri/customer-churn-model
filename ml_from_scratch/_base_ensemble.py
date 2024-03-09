@@ -68,6 +68,49 @@ class BaseEnsemble:
 
         return features_
 
+    def _predict_ensemble(self, X, estimators, selected_feature):
+        """
+        """
+
+        X = np.array(X).copy()
+        n_samples = X.shape[0]
+
+        n_estimators = len(estimators)
+
+        pred_size = (n_estimators, n_samples)
+        y_preds = np.empty(pred_size)
+
+        for i, estimator in enumerate(estimators):
+            X_i = X[:, selected_feature[i]]
+            y_preds[i] = estimator.predict(X_i)
+
+        return y_preds
+
+
+    def _aggregate_ensemble_prediction(self, y_ensembles):
+        """
+        """
+
+        n_samples = y_ensembles.shape[1]
+
+        y_pred = np.empty(n_samples)
+        for i in range(n_samples):
+            y = y_ensembles[:, i]
+            y_pred[i] = self._majority_vote_calculation(y=y)
+
+        return y_pred
+
+    def _majority_vote_calculation(self, y):
+        """
+        """
+
+        val, count = np.unique(y, return_counts=True)
+
+        max_idx = np.argmax(count)
+        y_pred = val[max_idx]
+
+        return y_pred
+
     def fit(self, X, y):
         """
         """
@@ -97,7 +140,6 @@ class BaseEnsemble:
         elif self.max_features == "log2":
             max_features = int(np.log2(self.n_features))
     
-        print(max_features)
 
         # 2. Select the features randomly
         self.selected_features = self._select_features(
@@ -105,12 +147,10 @@ class BaseEnsemble:
             n_population=self.n_features,
             n_features=max_features
         )
-        print(self.selected_features)
         
         # Fit each estimators with the data and the features
         for b in range(self.n_estimators):
             # Select bootstrap features
-            print(self.selected_features[b])
             X_bootstrap = X[:, self.selected_features[b]]
 
             # Select boostrap sample
@@ -119,3 +159,17 @@ class BaseEnsemble:
 
             estimator = self.estimators[b]
             estimator.fit(X_bootstrap, y_bootstrap)
+
+    def predict(self, X):
+        """
+        """
+
+        y_pred_ensembles = self._predict_ensemble(
+            X=X, 
+            estimators=self.estimators,
+            selected_feature=self.selected_features
+        )
+
+        y_preds = self._aggregate_ensemble_prediction(y_ensembles=y_pred_ensembles)
+
+        return y_preds
