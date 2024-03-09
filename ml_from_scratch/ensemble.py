@@ -5,6 +5,7 @@ from ._base_ensemble import BaseEnsemble
 from sklearn.tree import DecisionTreeClassifier
 
 
+
 class RandomForestClassifier(BaseEnsemble):
     """
     """
