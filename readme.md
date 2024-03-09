@@ -8,7 +8,7 @@ The objectives are:
 - Tuning the hyperparameter of the classifier with precision metrics
 - Testing the model against a dataset
 
-The dataset that is used for this project is from (Kaggle)[https://www.kaggle.com/datasets/mathchi/churn-for-bank-customers?resource=download]
+The dataset that is used for this project is from [Kaggle](https://www.kaggle.com/datasets/mathchi/churn-for-bank-customers?resource=download)
 
 ### Easy Report
 For the report and explanation about the code please visit my medium
